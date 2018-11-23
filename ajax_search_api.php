@@ -12,9 +12,10 @@ if(
 //POSTデータ取得
 $name   = $_POST['name'];
 // $other   = $_POST['other'];
-$like_name = '%'.$name.'%';
+// $like_name = '%'.$name.'%';
 
 //DB接続と検索処理
+$url = 'https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=7eff162e1226c9bf957b0395a8351850&hit_per_page=100&pref=PREF40&name='.$name;
 
 $sql = 'SELECT * FROM restaurants WHERE name LIKE (:name) ';
 $pdo = db_conn();

@@ -1,13 +1,14 @@
 <?php
 // APIからデータベースへのデータ取り込み用ファイル（エリア）
+//
+// try {
+//   $pdo = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
+// } catch (PDOException $e) {
+//   exit('dbError:'.$e->getMessage());
+// }
+include('functions.php');
+$pdo = db_conn();
 
-try {
-  $pdo = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
-  //localhostの時は、ユーザー名はroot、パスワードは''=空欄になる
-  //決まった書き方なので、dbname,host,username,passwordだけ変更する
-} catch (PDOException $e) {
-  exit('dbError:'.$e->getMessage());
-}
 
 $url= 'https://api.gnavi.co.jp/master/GAreaLargeSearchAPI/v3/?keyid=7eff162e1226c9bf957b0395a8351850';
 $options['ssl']['verify_peer']=false;
@@ -26,10 +27,7 @@ foreach ($areas as $area) {
   // var_dump($area_code);
 
   $sql = "INSERT INTO areas (id,area_name,area_code,indate)
-          VALUES(NULL, :a1, :a2, sysdate())
-          -- ON DUPLICATE KEY UPDATE area_name = VALUES (category_name);
-          -- -- ON DUPLICATE KEY UPDATE category_name = if(category_name = '居酒屋' , category_name, values(category_name))
-          ";
+          VALUES(NULL, :a1, :a2, sysdate())";
   $stmt = $pdo->prepare($sql);
   $stmt->bindValue(':a1', $area_name, PDO::PARAM_STR);
   $stmt->bindValue(':a2', $area_code, PDO::PARAM_STR);

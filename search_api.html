@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset=" UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form action="" method="post" id="post_form">
+        <input type="text" id="name" name="name" placeholder="name" autofocus>
+        <!-- <button id="send" type="submit">検索</button> -->
+    </form>
+    <!-- <input type="text" id="key" placeholder="アクセスキーを入力"> -->
+    <input type="button" id="submit" value="送信">
+    <table id="table" border="1">
+      <tr><th>店舗名</th><th>アクセス</th></tr>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+      function showResult( result ) {
+        for ( var i in result.rest ) {
+          $("#table").append("<tr><td>" + result.rest[ i ].name + "</td><td>" + result.rest[ i ].opentime  )
+        }
+      }
+
+      $ (function () {
+        var url = "https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=7eff162e1226c9bf957b0395a8351850&hit_per_page=100&name="+"name"
+        var params = {
+          name: "",
+          format: "json",
+          pref: 'PREF40'
+        }
+
+        $("#submit").on("click", function () {
+          params.name = $("#name").val()
+          $.getJSON( url, params, function( result ) {
+            showResult( result )
+          })
+        })
+      })
+    </script>
+  </body>
+  </html>

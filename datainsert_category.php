@@ -1,11 +1,7 @@
 <?php
 // APIからデータベースへのデータ取り込み用ファイル（カテゴリ）
-
-try {
-  $pdo = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
-} catch (PDOException $e) {
-  exit('dbError:'.$e->getMessage());
-}
+include('functions.php');
+$pdo = db_conn();
 
 // APIからデータ取得
 $url= 'https://api.gnavi.co.jp/master/CategoryLargeSearchAPI/v3/?keyid=7eff162e1226c9bf957b0395a8351850&lang=ja';
@@ -16,7 +12,7 @@ $json_obj = json_decode($json_str); // オブジェクトに変換
 $category_l = $json_obj->category_l;
 $categories = json_decode(json_encode($category_l));
 
-// DB登録
+// 取得データの表示
 foreach ($categories as $category) {
   $category_code = $category->category_l_code;
   $category_name = $category->category_l_name;
@@ -26,7 +22,7 @@ foreach ($categories as $category) {
   var_dump($category_name);
 
   // APIデータ登録用SQL文
-  $sql = "INSERT INTO categories (id,category_name,category_code,indate) 
+  $sql = "INSERT INTO categories (id,category_name,category_code,indate)
           VALUES(NULL, :a1, :a2, sysdate())";
   $stmt = $pdo->prepare($sql);
   $stmt->bindValue(':a1', $category_name, PDO::PARAM_STR);
