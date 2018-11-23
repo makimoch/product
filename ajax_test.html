@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset=" UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form action="" method="post" id="post_form">
+        <input type="text" id="name" name="name" placeholder="name">
+        <input type="text" id="other" name="other" placeholder="other">
+        <button id="send" type="submit">送信</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(window).on('load', function () {
+
+            $('#send').on('click', function () {
+                $('button').attr('disabled', true);
+                var input_value = new FormData($('#post_form')[0]);
+                $.ajax({
+                    type: 'post',
+                    url: 'ajax.php',
+                    data: input_value,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false
+                }).done(function (response, textStatus, xhr) {
+                    alert('done');
+                    console.log(response);
+                    // 返ってきたデータをhtmlに表示させるための加工をかく
+                    var list = '';
+                    for (var i=0; i<response.length; i++){
+                      list += '<li>'+ response[i] + '</li>';　// = ではなく += を使う
+                    }
+                    $('#res').html(list);
+                }).fail(function (response, textStatus, xhr) {
+                    alert('fail');
+                    console.log(response);
+                    return false;
+                }).always(function () {
+                    $('input').val('');
+                    $('button').attr('disabled', false);
+                });
+            });
+        });
+    </script>
+    <div id="res">
+
+    </div>
+</body>
+
+</html>
