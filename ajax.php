@@ -1,34 +1,35 @@
 <?php
 
 include('functions.php');
-//入力チェック(受信確認処理追加)
+//form入力チェック(受信確認処理追加)
 if(
-    !isset($_POST['name']) || $_POST['name']=="" ||
-    !isset($_POST['other']) || $_POST['other']==""
+    !isset($_POST['name']) || $_POST['name']==""
+    // !isset($_POST['other']) || $_POST['other']==""
 ){
     exit('ParamError');
 }
 
-//1. POSTデータ取得
+//POSTデータ取得
 $name   = $_POST['name'];
-$other   = $_POST['other'];
+// $other   = $_POST['other'];
+$like_name = '%'.$name.'%';
 
-$sql = 'INSERT INTO '.$tst_tbl .'(id, name, other, indate)VALUES(NULL, :a1, :a2, sysdate())';
-//2. DB接続します(エラー処理追加)
+//DB接続と検索処理
+$sql = 'SELECT * FROM test WHERE name LIKE (:name)';
 $pdo = db_conn();
-
-//３．データ登録SQL作成
+//SQL作成
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':a1', $name, PDO::PARAM_STR);
-$stmt->bindValue(':a2', $other, PDO::PARAM_STR);
+$stmt->bindValue(':name', $like_name, PDO::PARAM_STR);
+// $stmt->bindValue(':a2', $other, PDO::PARAM_STR);
 $status = $stmt->execute();
 
-//４．データ登録処理後
+//sql処理後
 if($status==false){
-    queryError($stmt);
-}else{
-    $array = [$name, $other];
-    echo json_encode($array);
+    errorMsg($stmt);
+    }else{
+    //*memo* SELECTで指定した項目をキーとして、fetchAllで全件データを取得と同時に
+    // JSONにエンコードする。header指定することでJavascript側にJSONで返す
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     exit;
 }
 

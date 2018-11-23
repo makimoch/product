@@ -10,8 +10,7 @@
 
     <form action="" method="post" id="post_form">
         <input type="text" id="name" name="name" placeholder="name" autofocus>
-        <!-- <input type="text" id="other" name="other" placeholder="other"> -->
-        <button id="send" type="submit">送信</button>
+        <button id="send" type="submit">検索</button>
     </form>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -23,7 +22,7 @@
                 var input_value = new FormData($('#post_form')[0]);
                 $.ajax({
                     type: 'post',
-                    url: 'ajax.php',
+                    url: 'ajax_search.php',
                     data: input_value,
                     dataType: 'json',
                     processData: false,
@@ -33,13 +32,9 @@
                     // 返ってきたjsonをhtmlに表示させるための加工
                     var list='';
                     for (var item in response) {
-                    console.log('名前' + ': ' + response[item]['name']+'　その他:'+ response[item]['other'])
-                    list +=  '名前: ' + response[item]['name']+'　その他:'+ response[item]['other']+'<br>'
+                    console.log(item + ': ' + response[item]['name']+':'+ response[item]['tel'])
+                    list += '店の名前: ' + response[item]['name']+'　電話:'+ response[item]['tel']+'<br>'
                     }
-                    // var list = '';
-                    // for (var i=0; i<response.length; i++){
-                    //   list += '<li>'+ response[i] + '</li>';　// = ではなく += を使う
-                    // }
                     $('#res').html(list);
                 }).fail(function (response, textStatus, xhr) {
                     alert('fail');
